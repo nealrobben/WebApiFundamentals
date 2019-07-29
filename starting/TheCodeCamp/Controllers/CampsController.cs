@@ -21,11 +21,11 @@ namespace TheCodeCamp.Controllers
         }
 
         [Route()]
-        public async Task<IHttpActionResult> Get()
+        public async Task<IHttpActionResult> Get(bool includeTalks = false)
         {
             try
             {
-                var camps = await _repository.GetAllCampsAsync();
+                var camps = await _repository.GetAllCampsAsync(includeTalks);
 
                 return Ok(_mapper.Map<IEnumerable<CampModel>>(camps));
             }
