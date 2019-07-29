@@ -24,7 +24,7 @@ namespace TheCodeCamp
         private static void RegisterServices(ContainerBuilder bldr)
         {
             var config = new MapperConfiguration(cfg => cfg.AddProfile(new CampMappingProfile()));
-            bldr.RegisterInstance(config).As<IMapper>().SingleInstance();
+            bldr.RegisterInstance(config.CreateMapper()).As<IMapper>().SingleInstance();
 
             bldr.RegisterType<CampContext>()
                 .InstancePerRequest();
