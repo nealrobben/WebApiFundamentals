@@ -1,12 +1,32 @@
-﻿using System.Web.Http;
+﻿using System;
+using System.Threading.Tasks;
+using System.Web.Http;
+using TheCodeCamp.Data;
 
 namespace TheCodeCamp.Controllers
 {
     public class CampsController : ApiController
     {
-        public IHttpActionResult Get()
+        private readonly ICampRepository _repository;
+
+        public CampsController(ICampRepository repository)
         {
-            return Ok(new { Name = "Shawn", Occupation = "Teacher" });
+            _repository = repository;
+        }
+
+        public async Task<IHttpActionResult> Get()
+        {
+            try
+            {
+                var camps = await _repository.GetAllCampsAsync();
+
+                return Ok(camps);
+            }
+            catch (Exception e)
+            {
+                //TODO: add logging
+                return InternalServerError();
+            }
         }
     }
 }
