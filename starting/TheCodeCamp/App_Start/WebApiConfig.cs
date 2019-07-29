@@ -3,7 +3,9 @@ using System.Web.Http.Routing;
 using Microsoft.Web.Http;
 using Microsoft.Web.Http.Routing;
 using Microsoft.Web.Http.Versioning;
+using Microsoft.Web.Http.Versioning.Conventions;
 using Newtonsoft.Json.Serialization;
+using TheCodeCamp.Controllers;
 
 namespace TheCodeCamp
 {
@@ -21,6 +23,9 @@ namespace TheCodeCamp
                 cfg.ReportApiVersions = true;
                 cfg.ApiVersionReader = ApiVersionReader.Combine(new HeaderApiVersionReader("X-Version"),
                     new QueryStringApiVersionReader("ver"));
+
+                cfg.Conventions.Controller<TalksController>().HasApiVersion(1, 0).HasApiVersion(1, 1)
+                    .Action(x => x.Get(default(string), default(int), default(bool))).MapToApiVersion(2, 0);
             });
 
             //Change case of JSON
