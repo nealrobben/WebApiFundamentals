@@ -8,6 +8,7 @@ using TheCodeCamp.Models;
 
 namespace TheCodeCamp.Controllers
 {
+    [RoutePrefix("api/camps")]
     public class CampsController : ApiController
     {
         private readonly ICampRepository _repository;
@@ -19,6 +20,7 @@ namespace TheCodeCamp.Controllers
             _mapper = mapper;
         }
 
+        [Route()]
         public async Task<IHttpActionResult> Get()
         {
             try
