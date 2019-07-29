@@ -21,13 +21,32 @@ namespace TheCodeCamp.Controllers
         }
 
         [Route()]
-        public async Task<IHttpActionResult> Get(string moniker)
+        public async Task<IHttpActionResult> Get(string moniker, bool includeSpeakers = false)
         {
             try
             {
-                var results = await _repository.GetTalksByMonikerAsync(moniker);
+                var results = await _repository.GetTalksByMonikerAsync(moniker, includeSpeakers);
 
                 return Ok(_mapper.Map<IEnumerable<TalkModel>>(results));
+            }
+            catch (Exception e)
+            {
+                return InternalServerError();
+            }
+        }
+
+        [Route("{id:int}")]
+
+        public async Task<IHttpActionResult> Get(string moniker, int id, bool includeSpeakers = false)
+        {
+            try
+            {
+                var result = await _repository.GetTalkByMonikerAsync(moniker, id, includeSpeakers);
+
+                if (result == null)
+                    return NotFound();
+
+                return Ok(_mapper.Map<TalkModel>(result));
             }
             catch (Exception e)
             {
