@@ -41,9 +41,12 @@ namespace TheCodeCamp.Controllers
         {
             try
             {
-                var camps = await _repository.GetCampAsync(moniker);
+                var camp = await _repository.GetCampAsync(moniker);
 
-                return Ok(_mapper.Map<CampModel>(camps));
+                if (camp == null)
+                    return NotFound();
+
+                return Ok(_mapper.Map<CampModel>(camp));
             }
             catch (Exception e)
             {
