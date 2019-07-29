@@ -99,5 +99,40 @@ namespace TheCodeCamp.Controllers
 
             return BadRequest();
         }
+
+        [Route("{talkId:int}")]
+        public async Task<IHttpActionResult> Put(string moniker, int talkId, TalkModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var talk = await _repository.GetTalkByMonikerAsync(moniker, talkId, true);
+
+                    if (talk == null)
+                        return NotFound();
+
+                    _mapper.Map<Talk>(model);
+
+                    if (talk.Speaker.SpeakerId != model.Speaker.SpeakerId)
+                    {
+                        var speaker = await _repository.GetSpeakerAsync(model.Speaker.SpeakerId);
+                        if (speaker != null)
+                            talk.Speaker = speaker;
+                    }
+
+                    if (await _repository.SaveChangesAsync())
+                    {
+                        return Ok(_mapper.Map<TalkModel>(model));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return InternalServerError();
+            }
+
+            return BadRequest();
+        }
     }
 }
