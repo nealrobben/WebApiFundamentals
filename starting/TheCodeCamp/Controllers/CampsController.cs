@@ -33,5 +33,21 @@ namespace TheCodeCamp.Controllers
                 return InternalServerError();
             }
         }
+
+        [Route("{moniker}")]
+        public async Task<IHttpActionResult> Get(string moniker)
+        {
+            try
+            {
+                var camps = await _repository.GetCampAsync(moniker);
+
+                return Ok(_mapper.Map<CampModel>(camps));
+            }
+            catch (Exception e)
+            {
+                //TODO: add logging
+                return InternalServerError();
+            }
+        }
     }
 }
