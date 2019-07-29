@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
 using AutoMapper;
+using AutoMapper.Configuration.Conventions;
+using Microsoft.Web.Http;
 using TheCodeCamp.Data;
 using TheCodeCamp.Models;
 
 namespace TheCodeCamp.Controllers
 {
+    [ApiVersion("1.0")]
+    [ApiVersion("1.1")]
     [RoutePrefix("api/camps")]
     public class CampsController : ApiController
     {
@@ -36,12 +40,33 @@ namespace TheCodeCamp.Controllers
             }
         }
 
+        [MapToApiVersion("1.0")]
         [Route("{moniker}", Name = "GetCamp")]
         public async Task<IHttpActionResult> Get(string moniker, bool includeTalks = false)
         {
             try
             {
                 var camp = await _repository.GetCampAsync(moniker, includeTalks);
+
+                if (camp == null)
+                    return NotFound();
+
+                return Ok(_mapper.Map<CampModel>(camp));
+            }
+            catch (Exception e)
+            {
+                //TODO: add logging
+                return InternalServerError();
+            }
+        }
+
+        [MapToApiVersion("1.1")]
+        [Route("{moniker}", Name = "GetCamp11")]
+        public async Task<IHttpActionResult> Get(string moniker)
+        {
+            try
+            {
+                var camp = await _repository.GetCampAsync(moniker, true);
 
                 if (camp == null)
                     return NotFound();
