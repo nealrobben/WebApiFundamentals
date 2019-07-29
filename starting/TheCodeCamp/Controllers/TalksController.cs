@@ -71,6 +71,14 @@ namespace TheCodeCamp.Controllers
 
                     talk.Camp = camp;
 
+                    if (model.Speaker != null)
+                    {
+                        var speaker = await _repository.GetSpeakerAsync(model.Speaker.SpeakerId);
+
+                        if (speaker != null)
+                            talk.Speaker = speaker;
+                    }
+
                     _repository.AddTalk(talk);
 
                     if (await _repository.SaveChangesAsync())
